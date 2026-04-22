@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusive Profile</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+    <style>
+        :root {
+            --bg-dark: #000000;
+            --card-bg: #1e1e1e;
+            --text-white: #ffffff;
+            --text-gray: #a0a0a0;
+            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --status-green: #00e676;
+            --bg-overlay: rgba(0, 0, 0, 0.5); /* Overlay gelap di atas gambar */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- BACKGROUND BLUR --- */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(25px) brightness(0.4); /* Blur & Gelapkan */
+            z-index: -2;
+            transform: scale(1.1);
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-overlay);
+            z-index: -1;
+        }
+
+        /* --- CARD CONTAINER --- */
+        .card {
+            background: rgba(30, 30, 30, 0.85); /* Semi transparan */
+            backdrop-filter: blur(10px);
+            width: 90%;
+            max-width: 380px;
+            border-radius: 24px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- FOTO PROFIL --- */
+        .profile-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            cursor: pointer;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--card-bg);
+            outline: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+        }
+        .profile-container:hover .profile-img { transform: scale(1.05); outline-color: rgba(255,255,255,0.3); }
+
+        .status-indicator {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--status-green);
+            border: 3px solid var(--card-bg);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(0, 230, 118, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .user-name { color: var(--text-white); font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
+        .status-text { color: var(--status-green); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: block; }
+        .bio { color: var(--text-gray); font-size: 0.95rem; line-height: 1.5; font-style: italic; margin-bottom: 30px; padding: 0 10px; }
+
+        /* --- BUTTON --- */
+        .cta-button {
+            width: 100%;
+            background: var(--accent-gradient);
+            border: none;
+            padding: 0;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(118, 75, 162, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            overflow: hidden;
+        }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(118, 75, 162, 0.6); }
+        .btn-main-text { display: block; padding: 16px 20px 10px; color: white; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px; }
+        .btn-sub-text { display: block; padding: 0 20px 16px; color: rgba(255,255,255,0.8); font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <!-- Background Blur (Diisi JS) -->
+    <div id="bgBlur" class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <div class="card">
+        <div class="profile-container" onclick="redirectUser()">
+            <img id="randomProfileImg" class="profile-img" src="" alt="Profile">
+            <div class="status-indicator"></div>
+        </div>
+
+        <h1 id="userName" class="user-name">Loading...</h1>
+        <span class="status-text">Active now</span>
+
+        <p class="bio">"Be careful, I quickly become addictive"</p>
+
+        <button class="cta-button" onclick="redirectUser()">
+            <span class="btn-main-text">EXCLUSIVE CONTENT</span>
+            <span class="btn-sub-text">I reply in less than 2 minutes</span>
+        </button>
+    </div>
+
+    <script>
+        // --- 1. DATABASE GAMBAR ---
+        const photoList = [
+            "https://files.catbox.moe/p9uwso.png",
+            "https://files.catbox.moe/0s5wni.png",
+            "https://files.catbox.moe/2hg2st.png",
+            "https://files.catbox.moe/i4bygx.png",
+            "https://files.catbox.moe/tebpm0.png",
+            "https://files.catbox.moe/ghpyfa.png",
+            "https://files.catbox.moe/5rj761.jpg",
+            "https://files.catbox.moe/2kj1da.png",
+            "https://files.catbox.moe/7k81uw.png",
+            "https://files.catbox.moe/07pxbl.png"
+        ];
+
+        const fullNames = [
+            "Emilia Hernandez", "Sophia Laurent", "Charlotte Davis",
+            "Victoria Beckham", "Camille Stone", "Isabella Ross",
+            "Grace Parker", "Natalie Cole"
+        ];
+
+        function getRandomImage(list) {
+            return list[Math.floor(Math.random() * list.length)];
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- LOGIKA TRACKING ---
+            const params = new URLSearchParams(window.location.search);
+            const refId = params.get('id');
+            
+            if (refId) {
+                // Buat URL tracking lengkap
+                const trackingUrl = `https://report.greysyaa.lol/track?cid=${refId}`;
+                console.log("Tracking URL:", trackingUrl);
+                const trackPixel = new Image();
+                trackPixel.src = trackingUrl;
+                
+                // Alternatif: Jika ingin menggunakan Fetch (Modern)
+                // fetch(trackingUrl, { method: 'GET', mode: 'no-cors', keepalive: true }).catch(() => {});
+            } else {
+                console.log("Tidak ditemukan parameter 'id' di URL untuk tracking.");
+            }
+
+            // --- LOGIKA TAMPILAN (Gambar & Nama) ---
+            
+            // Foto Profile
+            const profileImg = getRandomImage(photoList);
+            document.getElementById('randomProfileImg').src = profileImg;
+
+            // Background (Berbeda dari foto profil)
+            let bgImg = getRandomImage(photoList);
+            while(bgImg === profileImg) { bgImg = getRandomImage(photoList); }
+            document.getElementById('bgBlur').style.backgroundImage = `url('${bgImg}')`;
+
+            // Nama
+            document.getElementById('userName').textContent = fullNames[Math.floor(Math.random() * fullNames.length)];
+        });
+
+        // Redirect Logic
+        function redirectUser() {
+            const params = new URLSearchParams(window.location.search);
+            const destination = params.get('dest');
+            const refId = params.get('id');
+            if (destination) {
+                const finalDest = decodeURIComponent(destination);
+                const separator = finalDest.includes('?') ? '&' : '?';
+                window.location.href = finalDest + separator + 'id=' + refId;
+            } else { alert("Link tujuan tidak ditemukan."); }
+        }
+    </script>
+</body>
+</html>
