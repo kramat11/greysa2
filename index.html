@@ -184,25 +184,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // --- LOGIKA TRACKING ---
-            const params = new URLSearchParams(window.location.search);
-            const refId = params.get('id');
-            
-            if (refId) {
-                // Buat URL tracking lengkap
-                const trackingUrl = `https://report.greysyaa.lol/track?cid=${refId}`;
-                console.log("Tracking URL:", trackingUrl);
-                const trackPixel = new Image();
-                trackPixel.src = trackingUrl;
-                
-                // Alternatif: Jika ingin menggunakan Fetch (Modern)
-                // fetch(trackingUrl, { method: 'GET', mode: 'no-cors', keepalive: true }).catch(() => {});
-            } else {
-                console.log("Tidak ditemukan parameter 'id' di URL untuk tracking.");
-            }
-
-            // --- LOGIKA TAMPILAN (Gambar & Nama) ---
-            
             // Foto Profile
             const profileImg = getRandomImage(photoList);
             document.getElementById('randomProfileImg').src = profileImg;
@@ -216,16 +197,18 @@
             document.getElementById('userName').textContent = fullNames[Math.floor(Math.random() * fullNames.length)];
         });
 
-        // Redirect Logic
+        // Redirect Logic (Fungsi Tombol)
         function redirectUser() {
             const params = new URLSearchParams(window.location.search);
             const destination = params.get('dest');
-            const refId = params.get('id');
+            
             if (destination) {
-                const finalDest = decodeURIComponent(destination);
-                const separator = finalDest.includes('?') ? '&' : '?';
-                window.location.href = finalDest + separator + 'id=' + refId;
-            } else { alert("Link tujuan tidak ditemukan."); }
+                // Langsung redirect ke tujuan bersih tanpa menambahkan parameter ID
+                // ID akan dideteksi oleh backend (Worker)
+                window.location.href = decodeURIComponent(destination);
+            } else {
+                alert("Link tujuan tidak ditemukan.");
+            }
         }
     </script>
 </body>
