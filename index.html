@@ -3,83 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exclusive Profile</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+    <title>VIP Access | Exclusive</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
     <style>
         :root {
-            --bg-dark: #000000;
-            --card-bg: #1e1e1e;
-            --text-white: #ffffff;
-            --text-gray: #a0a0a0;
-            --accent-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --status-green: #00e676;
-            --bg-overlay: rgba(0, 0, 0, 0.5); /* Overlay gelap di atas gambar */
+            --primary: #ff0055;
+            --secondary: #00e5ff;
+            --glass-bg: rgba(20, 20, 20, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+            --shadow-color: rgba(0, 0, 0, 0.6);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: #050505;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
             overflow: hidden;
+            color: var(--text-main);
         }
 
-        /* --- BACKGROUND BLUR --- */
-        .bg-image {
+        /* --- VIDEO BACKGROUND --- */
+        .video-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-size: cover;
-            background-position: center;
-            filter: blur(25px) brightness(0.4); /* Blur & Gelapkan */
+            object-fit: cover;
             z-index: -2;
-            transform: scale(1.1);
+            /* Sedikit blur agar teks terbaca, tapi video tetap terlihat jelas */
+            filter: brightness(0.5) blur(3px); 
+            transform: scale(1.05);
         }
 
-        .bg-overlay {
+        .vignette {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--bg-overlay);
+            background: radial-gradient(circle, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 90%);
             z-index: -1;
+            pointer-events: none;
         }
 
-        /* --- CARD CONTAINER --- */
-        .card {
-            background: rgba(30, 30, 30, 0.85); /* Semi transparan */
-            backdrop-filter: blur(10px);
+        /* --- CARD UI --- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             width: 90%;
-            max-width: 380px;
-            border-radius: 24px;
-            padding: 30px 25px;
+            max-width: 360px;
+            border-radius: 30px;
+            padding: 40px 30px;
             text-align: center;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.1);
             position: relative;
-            z-index: 1;
+            z-index: 10;
+            border: 1px solid var(--glass-border);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.8),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            
+            /* Animation */
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            animation: cardEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
-        /* --- FOTO PROFIL --- */
-        .profile-container {
+        @keyframes cardEntrance {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- PROFILE --- */
+        .profile-wrapper {
             position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-            cursor: pointer;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 25px;
+        }
+
+        .profile-ring {
+            position: absolute;
+            top: -5px; left: -5px; right: -5px; bottom: -5px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: linear-gradient(45deg, var(--primary), var(--secondary)) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+            animation: spinRing 4s linear infinite;
+        }
+
+        @keyframes spinRing {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .profile-img {
@@ -87,75 +117,165 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid var(--card-bg);
-            outline: 2px solid rgba(255,255,255,0.1);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            transition: transform 0.3s;
+            border: 4px solid rgba(30, 30, 30, 0.6);
+            position: relative;
+            z-index: 2;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
         }
-        .profile-container:hover .profile-img { transform: scale(1.05); outline-color: rgba(255,255,255,0.3); }
 
-        .status-indicator {
+        .profile-wrapper:hover .profile-img {
+            transform: scale(1.08);
+        }
+
+        .badge {
             position: absolute;
             bottom: 5px;
             right: 5px;
-            width: 20px;
-            height: 20px;
-            background-color: var(--status-green);
-            border: 3px solid var(--card-bg);
+            background: #1e1e1e;
+            color: var(--secondary);
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(0, 230, 118, 0.4);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(0, 230, 118, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            z-index: 3;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            border: 1px solid var(--secondary);
         }
 
         /* --- TYPOGRAPHY --- */
-        .user-name { color: var(--text-white); font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
-        .status-text { color: var(--status-green); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: block; }
-        .bio { color: var(--text-gray); font-size: 0.95rem; line-height: 1.5; font-style: italic; margin-bottom: 30px; padding: 0 10px; }
+        .user-name {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .user-handle {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .bio-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bio-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
 
         /* --- BUTTON --- */
-        .cta-button {
-            width: 100%;
-            background: var(--accent-gradient);
-            border: none;
-            padding: 0;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(118, 75, 162, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-decoration: none;
-            overflow: hidden;
+        .btn-container {
+            position: relative;
         }
-        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(118, 75, 162, 0.6); }
-        .btn-main-text { display: block; padding: 16px 20px 10px; color: white; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px; }
-        .btn-sub-text { display: block; padding: 0 20px 16px; color: rgba(255,255,255,0.8); font-size: 0.8rem; }
+
+        .action-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, var(--primary) 0%, #990033 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255, 0, 85, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 0, 85, 0.5);
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #00ff88;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00ff88;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        @media (max-width: 480px) {
+            .glass-card { width: 95%; padding: 30px 20px; }
+            .video-bg { filter: brightness(0.6) blur(2px); }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Background Blur (Diisi JS) -->
-    <div id="bgBlur" class="bg-image"></div>
-    <div class="bg-overlay"></div>
+    <!-- Video Background (Source diisi oleh JS) -->
+    <video id="bgVideo" class="video-bg" autoplay muted loop playsinline></video>
+    
+    <!-- Overlay -->
+    <div class="vignette"></div>
 
-    <div class="card">
-        <div class="profile-container" onclick="redirectUser()">
+    <div class="glass-card">
+        <div class="profile-wrapper" onclick="redirectUser()">
+            <div class="profile-ring"></div>
             <img id="randomProfileImg" class="profile-img" src="" alt="Profile">
-            <div class="status-indicator"></div>
+            <div class="badge">✓</div>
         </div>
 
         <h1 id="userName" class="user-name">Loading...</h1>
-        <span class="status-text">Active now</span>
+        <span class="user-handle">@exclusive_vip</span>
 
-        <p class="bio">"Be careful, I quickly become addictive"</p>
+        <div class="bio-box">
+            <p class="bio-text">"Connecting to private secure channel. Please wait while we verify your access."</p>
+        </div>
 
-        <button class="cta-button" onclick="redirectUser()">
-            <span class="btn-main-text">EXCLUSIVE CONTENT</span>
-            <span class="btn-sub-text">I reply in less than 2 minutes</span>
-        </button>
+        <div class="btn-container">
+            <button class="action-btn" onclick="redirectUser()">
+                <span>Continue Now</span>
+                <div class="notification-dot"></div>
+            </button>
+        </div>
     </div>
 
     <script>
@@ -176,38 +296,68 @@
         const fullNames = [
             "Emilia Hernandez", "Sophia Laurent", "Charlotte Davis",
             "Victoria Beckham", "Camille Stone", "Isabella Ross",
-            "Grace Parker", "Natalie Cole"
+            "Grace Parker", "Natalie Cole", "Aria Montgomery", "Stella Nova"
         ];
 
-        function getRandomImage(list) {
+        // --- 2. DATABASE VIDEO ---
+        const videoList = [
+            "https://ceafgif.flirtpixel.com/bundle/921/assets/images/video-1.mp4",
+            "https://files.catbox.moe/387f3z.mp4",
+            "https://files.catbox.moe/y2fr1u.mp4",
+            "https://files.catbox.moe/o2bcz2.mp4",
+            "https://files.catbox.moe/jytnih.mp4",
+            "https://files.catbox.moe/1q99k0.mp4",
+            "https://files.catbox.moe/wkzv09.mp4",
+            "https://files.catbox.moe/9v2zxi.mp4",
+            "https://thumbsnap.com/i/37t8zezA.mp4",
+            "https://thumbsnap.com/i/2ycQSNZa.mp4",
+            "https://thumbsnap.com/i/AY9zveVs.mp4",
+            "https://thumbsnap.com/i/gzm5dPiX.mp4",
+            "https://assets.mixkit.co/videos/preview/mixkit-set-of-abstract-circles-loop-11805-large.mp4"
+        ];
+
+        function getRandomItem(list) {
             return list[Math.floor(Math.random() * list.length)];
         }
 
+        // --- 3. LOGIKA UTAMA ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Foto Profile
-            const profileImg = getRandomImage(photoList);
-            document.getElementById('randomProfileImg').src = profileImg;
+            // A. Set Random Profile
+            const profileImgUrl = getRandomItem(photoList);
+            document.getElementById('randomProfileImg').src = profileImgUrl;
+            document.getElementById('userName').textContent = getRandomItem(fullNames);
 
-            // Background (Berbeda dari foto profil)
-            let bgImg = getRandomImage(photoList);
-            while(bgImg === profileImg) { bgImg = getRandomImage(photoList); }
-            document.getElementById('bgBlur').style.backgroundImage = `url('${bgImg}')`;
+            // B. Set Random Background Video
+            const videoUrl = getRandomItem(videoList);
+            const bgVideo = document.getElementById('bgVideo');
+            bgVideo.src = videoUrl;
+            bgVideo.load(); // Memuat video
+            bgVideo.play().catch(e => {
+                console.log("Autoplay blocked by browser, waiting for interaction.");
+            });
 
-            // Nama
-            document.getElementById('userName').textContent = fullNames[Math.floor(Math.random() * fullNames.length)];
+            // C. Cek Parameter Dest
+            const params = new URLSearchParams(window.location.search);
+            const destination = params.get('dest');
+
+            // D. Auto Redirect 5 Detik (Hanya jika ada tujuan)
+            if (destination) {
+                setTimeout(() => {
+                    redirectUser();
+                }, 5000); // 5000ms = 5 detik
+            }
         });
 
-        // Redirect Logic (Fungsi Tombol)
+        // --- 4. FUNGSI REDIRECT ---
         function redirectUser() {
             const params = new URLSearchParams(window.location.search);
             const destination = params.get('dest');
             
             if (destination) {
-                // Langsung redirect ke tujuan bersih tanpa menambahkan parameter ID
-                // ID akan dideteksi oleh backend (Worker)
                 window.location.href = decodeURIComponent(destination);
             } else {
-                alert("Link tujuan tidak ditemukan.");
+                // Jika tidak ada tujuan, redirect ke default atau diamkan
+                console.log("Destination not found");
             }
         }
     </script>
